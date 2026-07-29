@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const CURRENT_VERSION = "v0.1.0";
-const REPO_URL = "https://api.github.com/repos/trev2/ai-studio-os/releases/latest";
+const REPO_URL = "https://api.github.com/repos/tttsmith215-gif/ai-studio-os/releases/latest";
 
 interface ReleaseInfo {
   tag_name: string;
