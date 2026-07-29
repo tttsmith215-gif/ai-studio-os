@@ -6,7 +6,8 @@ import { PlaybackControls } from "../../components/PlaybackControls";
 import { Timeline } from "../../components/Timeline";
 import { LayerPanel } from "../../components/LayerPanel";
 import type { Renderer } from "../../engine/renderer";
-import { useStore } from "../../store/context";
+import { useStore } from "../../hooks/useStore";
+import { useDebouncedCallback } from "../../hooks/useDebounce";
 import { saveProjectData } from "../../ipc/projects";
 import { saveTemplate } from "../../ipc/templates";
 import { exportComposition } from "../../engine/codecs";
@@ -44,7 +45,6 @@ function MotionStudioWorkspace() {
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "dirty" | "">("");
   const [exporting, setExporting] = useState(false);
   const rendererRef = useRef<Renderer | null>(null);
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Watch for pending motion layers from the Animation Library
   useEffect(() => {
@@ -78,23 +78,22 @@ function MotionStudioWorkspace() {
   }, [state.currentProject?.id, state.currentProjectData]);
 
   // Auto-save when composition changes (debounced)
+  const debouncedSave = useDebouncedCallback(async () => {
+    if (!state.currentProject) return;
+    setSaveStatus("saving");
+    try {
+      await saveProjectData(state.currentProject.id, JSON.stringify(comp));
+      setSaveStatus("saved");
+    } catch {
+      setSaveStatus("dirty");
+    }
+  }, state.settings.autosaveInterval * 1000);
+
   useEffect(() => {
     if (!state.currentProject || !state.settings.autosave) return;
     setSaveStatus("dirty");
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      setSaveStatus("saving");
-      try {
-        await saveProjectData(state.currentProject!.id, JSON.stringify(comp));
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("dirty");
-      }
-    }, state.settings.autosaveInterval * 1000);
-    return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    };
-  }, [comp, state.currentProject?.id]);
+    debouncedSave();
+  }, [comp, state.currentProject?.id, state.settings.autosave]);
 
   const handleFrameChange = useCallback((frame: number) => {
     setCurrentFrame(frame);

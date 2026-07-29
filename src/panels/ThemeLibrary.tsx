@@ -1,4 +1,4 @@
-import { useStore } from "../store/context";
+import { useStore } from "../hooks/useStore";
 
 export function ThemeLibrary() {
   const { state, dispatch } = useStore();

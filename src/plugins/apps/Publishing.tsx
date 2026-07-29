@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AppModule } from "../types";
-import { useStore } from "../../store/context";
+import { useStore } from "../../hooks/useStore";
 import { exportComposition, exportFrames } from "../../engine/codecs";
 
 const platforms = [

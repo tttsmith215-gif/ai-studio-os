@@ -1,7 +1,8 @@
-import { createContext, useContext, useReducer, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useEffect, useCallback, type ReactNode } from "react";
 import type { AppState, AppAction } from "./types";
 import { initialState, appReducer } from "./reducer";
 import { invoke } from "@tauri-apps/api/core";
+import { useDebouncedCallback } from "../hooks/useDebounce";
 
 interface StoreContext {
   state: AppState;
@@ -48,23 +49,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [state.activeTheme, state.themePresets]);
 
-  // Save settings to Tauri backend on change (debounced)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      invoke("save_settings", {
-        settings: {
-          theme: state.settings.theme,
-          language: state.settings.language,
-          autosave: state.settings.autosave,
-          autosave_interval: state.settings.autosaveInterval,
-          ai_provider: state.settings.aiProvider,
-          ai_model: state.settings.aiModel,
-          ai_endpoint: state.settings.aiEndpoint,
-        },
-      }).catch(() => {});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [state.settings]);
+  // Save settings to Tauri backend on change (debounced 500ms)
+  const debouncedSave = useDebouncedCallback(() => {
+    invoke("save_settings", {
+      settings: {
+        theme: state.settings.theme,
+        language: state.settings.language,
+        autosave: state.settings.autosave,
+        autosave_interval: state.settings.autosaveInterval,
+        ai_provider: state.settings.aiProvider,
+        ai_model: state.settings.aiModel,
+        ai_endpoint: state.settings.aiEndpoint,
+      },
+    }).catch(() => {});
+  }, 500);
+
+  useEffect(() => { debouncedSave(); }, [state.settings, debouncedSave]);
 
   return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>;
 }
