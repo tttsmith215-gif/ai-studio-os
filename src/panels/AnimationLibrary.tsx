@@ -45,10 +45,8 @@ export function AnimationLibrary() {
       </div>
 
       {categories.map((cat) => (
-        <div key={cat} style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </h2>
+        <div key={cat} className="mb-28">
+          <h2 className="panel-section-header">{cat.charAt(0).toUpperCase() + cat.slice(1)}</h2>
           <div className="panel-grid">
             {getComponentsByCategory(cat).map((comp) => (
               <div
@@ -64,10 +62,10 @@ export function AnimationLibrary() {
                   <div className="anim-card-desc">{comp.description}</div>
                   <div className="anim-card-footer">
                     <span className="badge badge-success">{comp.defaultDuration}s</span>
-                    <div style={{ display: "flex", gap: 4 }}>
+                    <div className="flex gap-4">
                       <button
                         className="btn btn-primary"
-                        style={{ fontSize: 11, padding: "3px 8px" }}
+                        className="btn btn-xs"
                         onClick={(e) => { e.stopPropagation(); handleApply(comp); }}
                       >
                         Apply
@@ -81,16 +79,16 @@ export function AnimationLibrary() {
 
           {/* Preview section */}
           {previewComp && (
-            <div style={{ marginTop: 12, padding: 16, background: "var(--bg-secondary)", borderRadius: "var(--radius-md)", border: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 600 }}>{previewComp.name}</h3>
+            <div className="preview-card" style={{ marginTop: 12, padding: 16 }}>
+              <div className="preview-card-header" style={{ marginBottom: 12 }}>
+                <h3 className="font-semibold" style={{ fontSize: 14 }}>{previewComp.name}</h3>
                 <span className="badge badge-default">{previewComp.category}</span>
               </div>
-              <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 12 }}>{previewComp.description}</p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <p className="text-secondary mb-12" style={{ fontSize: 12 }}>{previewComp.description}</p>
+              <div className="flex gap-8 flex-wrap">
                 {previewComp.params.map((p) => (
-                  <div key={p.key} style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 100 }}>
-                    <label style={{ fontSize: 10, color: "var(--text-muted)" }}>{p.label}</label>
+                  <div key={p.key} className="flex-col" style={{ gap: 2, minWidth: 100 }}>
+                    <label className="text-xs text-muted">{p.label}</label>
                     {p.type === "color" ? (
                       <input type="color" className="layer-prop-color" defaultValue={p.default} />
                     ) : p.type === "select" ? (
@@ -105,7 +103,7 @@ export function AnimationLibrary() {
                   </div>
                 ))}
               </div>
-              <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+              <div className="flex gap-8 mt-12">
                 <button className="btn btn-primary" onClick={() => handleApply(previewComp)}>
                   Apply to Composition
                 </button>

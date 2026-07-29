@@ -129,17 +129,17 @@ export function AIAgents() {
         </p>
       </div>
 
-      <div className="panel-grid" style={{ marginBottom: 20 }}>
+      <div className="panel-grid mb-20">
         {agents.map((a) => (
           <div
             key={a.id}
             className={`panel-card ${activeAgent === a.id ? "theme-card-active" : ""}`}
             onClick={() => selectAgent(a.id)}
           >
-            <div className="panel-card-icon" style={{ background: "rgba(108,92,231,0.15)" }}>{a.icon}</div>
+            <div className="panel-card-icon" style={{ background: "var(--accent-muted)" }}>{a.icon}</div>
             <div className="panel-card-title">{a.name}</div>
             <div className="panel-card-desc">{a.desc}</div>
-            <span className={`badge ${statusClass(agentStatus[a.id])}`} style={{ marginTop: 8 }}>
+            <span className={`badge mt-8 ${statusClass(agentStatus[a.id])}`} style={{ marginTop: 8 }}>
               {statusLabel(agentStatus[a.id])}
             </span>
           </div>
@@ -147,14 +147,14 @@ export function AIAgents() {
       </div>
 
       {agent && (
-        <div className="settings-section" style={{ padding: 0, overflow: "hidden" }}>
-          <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border-color)", fontWeight: 600 }}>
+        <div className="settings-section" style={{ overflow: "hidden" }}>
+          <div className="font-semibold" style={{ padding: "12px 16px", borderBottom: "1px solid var(--border-color)" }}>
             {agent.icon} {agent.name}
           </div>
 
           <div className="console-panel" style={{ border: "none", borderRadius: 0, height: 300, padding: 12 }}>
             {messages.length === 0 && (
-              <div style={{ color: "var(--text-muted)", textAlign: "center", paddingTop: 60 }}>
+              <div className="text-muted" style={{ textAlign: "center", paddingTop: 60 }}>
                 Ask {agent.name} a question about {agent.desc.toLowerCase()}.
               </div>
             )}
@@ -163,7 +163,7 @@ export function AIAgents() {
                 key={i}
                 className="console-line"
                 style={{
-                  color: m.role === "assistant" ? "var(--text-primary)" : "var(--accent)",
+                  color: m.role === "assistant" ? undefined : "var(--accent)",
                   marginBottom: 8,
                   whiteSpace: "pre-wrap",
                 }}
@@ -174,9 +174,9 @@ export function AIAgents() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div style={{ display: "flex", gap: 8, padding: "8px 12px", borderTop: "1px solid var(--border-color)" }}>
+          <div className="flex gap-8" style={{ padding: "8px 12px", borderTop: "1px solid var(--border-color)" }}>
             <input
-              className="input"
+              className="input flex-1"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}

@@ -213,7 +213,7 @@ function AppShell() {
       ? "autosave-indicator saved" : "autosave-indicator";
 
   return (
-    <div className="app-layout" style={{ flexDirection: "column" }}>
+    <div className="app-layout flex-col">
       <TitleBar
         title="AI Studio OS"
         theme={state.activeTheme}
@@ -228,7 +228,7 @@ function AppShell() {
         </div>
       )}
 
-      <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+      <div className="flex flex-1" style={{ minHeight: 0 }}>
         {sidebarVisible && <Sidebar />}
         <main className="main-area">
           <div className="topbar">

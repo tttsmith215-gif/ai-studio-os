@@ -38,10 +38,8 @@ export function HomeScreen() {
       </div>
 
       {/* App Launcher Grid */}
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
-          Apps
-        </h2>
+      <div className="mb-32">
+        <h2 className="panel-section-header">Apps</h2>
         <div className="panel-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}>
           {featuredApps.map((app) => {
             const installed = installedAppIds.has(app.id);
@@ -75,11 +73,9 @@ export function HomeScreen() {
       </div>
 
       {/* Quick Actions */}
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
-          Quick Actions
-        </h2>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="mb-32">
+        <h2 className="panel-section-header">Quick Actions</h2>
+        <div className="flex gap-8 flex-wrap">
           <button className="btn btn-primary" onClick={() => dispatch({ type: "NAVIGATE", panel: "app-store" })}>
             Browse Apps
           </button>
@@ -97,9 +93,7 @@ export function HomeScreen() {
 
       {/* Recent Activity */}
       <div>
-        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
-          Recent Activity
-        </h2>
+        <h2 className="panel-section-header">Recent Activity</h2>
         {state.renderQueue.filter((j) => j.status === "done").length > 0 ? (
           <div className="activity-list">
             {state.renderQueue

@@ -67,21 +67,21 @@ export function AppStore() {
       </div>
 
       {/* Search bar */}
-      <div className="topbar" style={{ marginBottom: 16, padding: "0 0 12px 0", borderBottom: "1px solid var(--border-color)" }}>
-        <div style={{ display: "flex", flex: 1, alignItems: "center", gap: 8 }}>
+      <div className="topbar mb-16" style={{ padding: "0 0 12px 0", borderBottom: "1px solid var(--border-color)" }}>
+        <div className="flex flex-1 items-center gap-8">
           <span>🔍</span>
           <input
             className="mg-comp-name"
             placeholder="Search apps..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, border: "none", background: "transparent", outline: "none", fontSize: 14 }}
+            className="flex-1" style={{ border: "none", background: "transparent", outline: "none", fontSize: 14 }}
           />
         </div>
       </div>
 
       {/* Category filter */}
-      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+      <div className="flex gap-6 mb-20 flex-wrap">
         <button
           className={`sidebar-item ${!filterCat ? "active" : ""}`}
           onClick={() => setFilterCat(null)}
@@ -103,20 +103,17 @@ export function AppStore() {
 
       {/* Featured section */}
       {!filterCat && !search && (
-        <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
-            ⭐ Featured
-          </h2>
+        <div className="mb-28">
+          <h2 className="panel-section-header">⭐ Featured</h2>
           <div className="panel-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
             {featuredSection.map((app) => {
               const installed = app.installed;
               return (
-                <div className={`plugin-card ${installed ? "installed" : ""}`} key={app.id} style={{ display: "flex", flexDirection: "column" }}>
+                <div className={`plugin-card ${installed ? "installed" : ""} flex-col`} key={app.id}>
                   <div className="plugin-card-top">
                     <span style={{ fontSize: 28 }}>{app.icon}</span>
                     <button
-                      className={`btn ${installed ? "btn-outline" : "btn-primary"}`}
-                      style={{ fontSize: 11, padding: "4px 10px" }}
+                      className={`btn btn-sm ${installed ? "btn-outline" : "btn-primary      style={{ fontSize: 11, padding: \"4px 10px\" }}", "newText": "                    <span style={{ fontSize: 28 }}>{app.icon}</span>\n                    <button\n                      className={`btn btn-sm ${installed ? \"btn-outline\" : \"btn-primary\"}`}", {"oldText": "                  <div className=\"plugin-card-desc\" style={{ flex: 1 }}>{app.desc}</div>", "newText": "                  <div className=\"plugin-card-desc flex-1\">{app.desc}</div>"}]
                       onClick={() => {
                         if (installed) {
                           dispatch({ type: "NAVIGATE", panel: app.id });

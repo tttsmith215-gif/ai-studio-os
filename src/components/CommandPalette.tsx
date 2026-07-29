@@ -96,7 +96,7 @@ export function CommandPalette({ onClose }: CommandPaletteProps) {
           ) : (
             flatItems.map((entry, i) => {
               if (entry.type === "header") {
-                return <div key={entry.label} style={{ padding: "8px 12px 4px", fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.8px", color: "var(--text-muted)" }}>{entry.label}</div>;
+                return <div key={entry.label} className="command-palette-group-header">{entry.label}</div>;
               }
               const { item, index } = entry;
               const isSelected = index === selectedIndex;

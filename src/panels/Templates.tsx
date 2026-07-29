@@ -55,7 +55,7 @@ export function Templates() {
 
   return (
     <div className="panel-container">
-      <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div className="panel-header flex justify-between items-start">
         <div>
           <h1 className="panel-title">Templates</h1>
           <p className="panel-subtitle">
@@ -66,20 +66,18 @@ export function Templates() {
       </div>
 
       {/* Category filter */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="filter-bar">
         <button
-          className={`btn ${filterCat === null ? "btn-primary" : ""}`}
+          className={`btn filter-btn ${filterCat === null ? "btn-primary" : ""}`}
           onClick={() => setFilterCat(null)}
-          style={{ fontSize: 12, padding: "4px 10px" }}
         >
           All
         </button>
         {categories.map((cat) => (
           <button
             key={cat}
-            className={`btn ${filterCat === cat ? "btn-primary" : ""}`}
+            className={`btn filter-btn ${filterCat === cat ? "btn-primary" : ""}`}
             onClick={() => setFilterCat(cat)}
-            style={{ fontSize: 12, padding: "4px 10px" }}
           >
             {categoryLabels[cat] ?? cat}
           </button>
@@ -133,17 +131,9 @@ export function Templates() {
 
       {/* Preview panel */}
       {preview && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: 20,
-            background: "var(--bg-secondary)",
-            borderRadius: "var(--radius-md)",
-            border: "1px solid var(--border-color)",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="preview-card">
+          <div className="preview-card-header">
+            <div className="flex items-center gap-12">
               <span style={{ fontSize: 28 }}>{preview.icon}</span>
               <div>
                 <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>{preview.name}</h3>
@@ -152,7 +142,7 @@ export function Templates() {
                 </p>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="flex gap-8">
               <button className="btn btn-primary" onClick={() => handleApply(preview)}>
                 Apply Template
               </button>
@@ -163,7 +153,7 @@ export function Templates() {
           </div>
 
           {/* Template details */}
-          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+          <div className="flex gap-16 mb-16 flex-wrap">
             <span className="badge badge-default" style={{ fontSize: 11 }}>
               {preview.width} × {preview.height}
             </span>
@@ -181,10 +171,10 @@ export function Templates() {
           </div>
 
           {/* Slot breakdown */}
-          <h4 style={{ fontSize: 13, fontWeight: 600, margin: "0 0 8px", color: "var(--text-secondary)" }}>
+          <h4 className="text-secondary font-semibold" style={{ fontSize: 13, margin: "0 0 8px" }}>
             Composition Slots ({preview.slots.length})
           </h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div className="flex-col gap-8">
             {preview.slots.map((slot, i) => {
               const label = slot.name ?? slot.componentId;
               const cfg = slot.config;
