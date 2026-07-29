@@ -1,0 +1,60 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# Rust / Tauri build output
+/src-tauri/target/
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# Runtime data directories (created on first run by init.rs)
+/projects/
+/templates/
+/assets/
+/exports/
+/plugins/user/
+/plugins/disabled/
+/themes/user/
+/settings/
+/logs/
+/cache/
+/backups/
+/versioning/
+/autosaves/
+/user/
+/agents/user/
+/agents/marketplace/
+/analytics/
+/.trash/
+
+# Keep these empty dirs tracked via .gitkeep
+!**/.gitkeep
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store

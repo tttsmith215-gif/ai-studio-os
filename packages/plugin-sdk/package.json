@@ -1,0 +1,28 @@
+{
+  "name": "@ai-studio-os/plugin-sdk",
+  "version": "1.0.0",
+  "description": "AI Studio OS Plugin SDK — TypeScript types and interfaces for building plugins",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-studio-os/plugin-sdk"
+  }
+}
