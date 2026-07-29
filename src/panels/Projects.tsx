@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useStore } from "../store/context";
-import { listProjects, createProject, deleteProject, loadProjectData } from "../ipc/projects";
+import { listProjects, createProject, deleteProject, saveProjectData, loadProjectData } from "../ipc/projects";
+import { exportPackage, importPackage, restoreAssets } from "../ipc/packager";
 import { trackEvent } from "../plugins/apps/Analytics";
 
 export function Projects() {
@@ -36,6 +37,27 @@ export function Projects() {
     } catch {}
   };
 
+  const handleExport = async (project: any) => {
+    trackEvent("project", "export:" + project.name);
+    try {
+      const data = await loadProjectData(project.id);
+      exportPackage(project.name, project.app, data);
+      dispatch({ type: "NOTIFY", id: "export-pkg", message: `${project.name} exported as .aistudio`, level: "success" });
+    } catch {}
+  };
+
+  const handleImport = async () => {
+    const pkg = await importPackage();
+    if (!pkg) return;
+    trackEvent("project", "import:" + pkg.name);
+    const data = restoreAssets(pkg.data, pkg.assets);
+    const project = await createProject(pkg.name, pkg.app);
+    await saveProjectData(project.id, data);
+    const projects = await listProjects();
+    dispatch({ type: "PROJECTS_LOAD", projects });
+    dispatch({ type: "NOTIFY", id: "import-pkg", message: `Imported ${pkg.name}`, level: "success" });
+  };
+
   const handleOpen = async (project: any) => {
     try {
       const data = await loadProjectData(project.id);
@@ -56,6 +78,7 @@ export function Projects() {
           <p className="panel-subtitle">Manage your creative projects</p>
         </div>
         <button className="btn btn-primary" onClick={() => setShowNew(true)}>+ New Project</button>
+        <button className="btn" onClick={handleImport} style={{ marginLeft: 8 }}>📦 Import</button>
       </div>
 
       {showNew && (
@@ -116,6 +139,7 @@ export function Projects() {
                   <span className="badge badge-success">Draft</span>
                 )}
               </div>
+              <button className="btn project-row-action" onClick={(e) => { e.stopPropagation(); handleExport(p); }} title="Export as .aistudio">📦</button>
               <button className="btn project-row-delete" onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} title="Delete project">🗑️</button>
             </div>
           ))}

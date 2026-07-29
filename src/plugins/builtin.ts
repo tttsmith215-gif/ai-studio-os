@@ -34,7 +34,17 @@ export const builtinRegistry = new BuiltinRegistryAdapter();
 import { MotionStudio } from "./apps/MotionStudio";
 import { Publishing } from "./apps/Publishing";
 import { Analytics } from "./apps/Analytics";
+import { ThumbnailStudio } from "./apps/ThumbnailStudio";
+import { VideoEditor } from "./apps/VideoEditor";
+import { ImageStudio } from "./apps/ImageStudio";
+import { PresentationStudio } from "./apps/PresentationStudio";
+import { ShaderGraphApp } from "./apps/ShaderGraphApp";
 
 MotionStudio.register(builtinRegistry);
 Publishing.register(builtinRegistry);
 Analytics.register(builtinRegistry);
+ThumbnailStudio.register(builtinRegistry);
+VideoEditor.register(builtinRegistry);
+ImageStudio.register(builtinRegistry);
+PresentationStudio.register(builtinRegistry);
+ShaderGraphApp.register(builtinRegistry);

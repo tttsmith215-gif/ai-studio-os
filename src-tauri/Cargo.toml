@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "An operating system for AI-powered content creation"
 authors = ["you"]
 edition = "2021"
+default-run = "ai-studio-os"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

@@ -64,8 +64,7 @@ export function AnimationLibrary() {
                     <span className="badge badge-success">{comp.defaultDuration}s</span>
                     <div className="flex gap-4">
                       <button
-                        className="btn btn-primary"
-                        className="btn btn-xs"
+                        className="btn btn-xs btn-primary"
                         onClick={(e) => { e.stopPropagation(); handleApply(comp); }}
                       >
                         Apply

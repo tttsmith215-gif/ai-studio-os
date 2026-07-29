@@ -1,0 +1,24 @@
+{
+  "id": "com.example.sample-plugin",
+  "name": "Sample Plugin",
+  "version": "1.0.0",
+  "minHostVersion": "0.1.0",
+  "author": "AI Studio OS Community",
+  "description": "A sample plugin demonstrating the plugin SDK API",
+  "icon": "icon.png",
+  "license": "MIT",
+  "entry": "index.js",
+  "keywords": ["sample", "demo", "example"],
+  "homepage": "https://github.com/ai-studio-os/sample-plugin",
+  "permissions": [
+    {
+      "type": "filesystem",
+      "description": "Save plugin configuration files",
+      "paths": ["~/.ai-studio-os/plugins/com.example.sample-plugin"]
+    },
+    {
+      "type": "notifications",
+      "description": "Show notifications to the user"
+    }
+  ]
+}

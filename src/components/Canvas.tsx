@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createRenderer, type Renderer } from "../engine/renderer";
+import { createAutoRenderer, type Renderer } from "../engine/renderer";
 import type { Composition } from "../engine/types";
 
 interface CanvasProps {
@@ -17,7 +17,7 @@ export function Canvas({ composition, currentFrame, onFrameChange, rendererRef }
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const renderer = createRenderer(canvas);
+    const renderer = createAutoRenderer(canvas);
     internalRef.current = renderer;
     if (rendererRef) rendererRef.current = renderer;
     renderer.load(composition);

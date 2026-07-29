@@ -22,6 +22,7 @@ const systemNav: NavItem[] = [
   { id: "export-manager", name: "Export Manager", icon: "📤", category: "System" },
   { id: "settings", name: "Settings", icon: "⚙️", category: "System" },
   { id: "console", name: "Console / Logs", icon: "⌨️", category: "System" },
+  { id: "plugin-docs", name: "Plugin API Ref", icon: "📖", category: "System" },
 ];
 
 const libraryNav: NavItem[] = [

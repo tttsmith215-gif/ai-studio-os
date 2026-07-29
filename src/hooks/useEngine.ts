@@ -1,16 +1,9 @@
 import { useRef, useEffect, useCallback } from "react";
-import { createRenderer, type Renderer } from "../engine/renderer";
-import type { Composition } from "../engine/types";
+import { createAutoRenderer, type Renderer } from "../engine/renderer";
 
 /**
  * Bind a canvas ref to the renderer lifecycle.
- * Automatically creates/destroys the renderer, handles resize, and
- * provides play/pause/goToFrame controls.
- *
- * ```ts
- * const canvasRef = useRef<HTMLCanvasElement>(null);
- * const { play, pause, goToFrame, load } = useEngine(canvasRef, comp);
- * ```
+ * Automatically selects WebGL2 if available, falls back to Canvas 2D.
  */
 export function useEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>, composition: Composition | null) {
   const renderer = useRef<Renderer | null>(null);
@@ -19,7 +12,7 @@ export function useEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>, 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !composition) return;
-    renderer.current = createRenderer(canvas);
+    renderer.current = createAutoRenderer(canvas);
     renderer.current.load(composition);
     return () => {
       renderer.current?.destroy();

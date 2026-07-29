@@ -16,11 +16,14 @@ import { ExportManager } from "./panels/ExportManager";
 import { PluginManager } from "./panels/PluginManager";
 import { UpdateManager } from "./panels/UpdateManager";
 import { ConsoleLogs } from "./panels/Console";
+import { PluginDocs } from "./panels/PluginDocs";
+import { PermissionDialogManager } from "./panels/PermissionDialogManager";
 import { StoreProvider, useStore } from "./store/context";
 import { shortcuts, registerDefaultShortcuts } from "./shortcuts";
 import { hotReload } from "./plugins/hotreload";
 import { AutoSaveManager, type AutoSaveStatus, getAutoSaveStatus } from "./autosave";
 import { pluginRegistry } from "./plugins/registry";
+import "./plugins/builtin"; // Register built-in creative apps
 import "./styles/globals.css";
 
 const panelMap: Record<string, React.ComponentType> = {
@@ -36,6 +39,7 @@ const panelMap: Record<string, React.ComponentType> = {
   "render-queue": RenderQueue,
   "export-manager": ExportManager,
   "plugin-manager": PluginManager,
+  "plugin-docs": PluginDocs,
   "update-manager": UpdateManager,
   console: ConsoleLogs,
 };
@@ -57,6 +61,7 @@ const panelTitles: Record<string, string> = {
   "render-queue": "Render Queue",
   "export-manager": "Export Manager",
   "plugin-manager": "Plugin Manager",
+  "plugin-docs": "Plugin API Reference",
   "update-manager": "Update Manager",
   console: "Console / Logs",
 };
@@ -214,6 +219,7 @@ function AppShell() {
 
   return (
     <div className="app-layout flex-col">
+      <PermissionDialogManager />
       <TitleBar
         title="AI Studio OS"
         theme={state.activeTheme}

@@ -1,5 +1,6 @@
 import type { Composition, Layer, Transform } from "./types";
 import { interpolateTransform } from "./keyframes";
+import { createWebGL2Renderer } from "./webgl2-renderer";
 
 export interface RenderState {
   composition: Composition;
@@ -8,7 +9,25 @@ export interface RenderState {
   resolution: number; // 0.25-2.0
 }
 
-export function createRenderer(canvas: HTMLCanvasElement) {
+// ─── Auto-detect renderer: WebGL2 if available, Canvas 2D fallback ──
+
+export function createAutoRenderer(canvas: HTMLCanvasElement) {
+  const gl = canvas.getContext("webgl2");
+  if (gl) {
+    // Release the context so createWebGL2Renderer can re-acquire it
+    const lose = gl.getExtension("WEBGL_lose_context");
+    if (lose) lose.loseContext();
+    return createWebGL2Renderer(canvas);
+  }
+  console.log("[Renderer] WebGL2 not available, using Canvas 2D fallback");
+  return createRenderer(canvas);
+}
+
+export function createCanvas2DRenderer(canvas: HTMLCanvasElement) {
+  return createRenderer(canvas);
+}
+
+function createRenderer(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext("2d")!;
   let state: RenderState | null = null;
   let rafId = 0;
@@ -205,4 +224,15 @@ export function createRenderer(canvas: HTMLCanvasElement) {
   };
 }
 
-export type Renderer = ReturnType<typeof createRenderer>;
+export interface Renderer {
+  load(comp: Composition): void;
+  play(): void;
+  pause(): void;
+  goToFrame(frame: number): void;
+  getCurrentFrame(): number;
+  isPlaying(): boolean;
+  getTotalFrames(): number;
+  getFps(): number;
+  resize(): void;
+  destroy(): void;
+}

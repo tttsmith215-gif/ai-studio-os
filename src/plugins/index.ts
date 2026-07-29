@@ -6,7 +6,10 @@
 // ---------------------------------------------------------------------------
 
 export { pluginRegistry, ExtensionRegistry, PluginRegistry } from "./registry";
-export { PluginLoader, validateManifest } from "./loader";
-export type { PluginLoadResult, PluginLoaderOptions } from "./loader";
+export { dynamicLoader, hotReload, initializePluginSystem } from "./loader";
+export { validateManifest, satisfies } from "./manifest-schema";
+export { permissionManager } from "./permissions";
+export { marketplace } from "./marketplace";
+export { createPluginSandbox } from "./sandbox";
 
 export * from "../sdk/index";

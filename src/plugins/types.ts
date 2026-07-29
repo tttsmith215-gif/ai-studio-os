@@ -109,4 +109,4 @@ export type {
 // ---------------------------------------------------------------------------
 export type { AppModule } from "./types.old";
 export { pluginRegistry } from "./registry";
-export { PluginLoader } from "./loader";
+export { dynamicLoader, hotReload } from "./loader";

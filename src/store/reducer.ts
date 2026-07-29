@@ -238,6 +238,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case "COMPOSITION_ADD_LAYERS":
       return { ...state, pendingMotion: action.pending };
 
+    case "PLUGIN_INSTALL_USER":
+      return { ...state, plugins: [...state.plugins, action.plugin] };
+
+    case "PLUGIN_UNINSTALL":
+      return { ...state, plugins: state.plugins.filter((p) => p.id !== action.id) };
+
     default:
       return state;
   }

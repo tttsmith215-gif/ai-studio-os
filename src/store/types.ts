@@ -89,4 +89,6 @@ export type AppAction =
   | { type: "NOTIFY"; id: string; message: string; level: string }
   | { type: "NOTIFY_DISMISS"; id: string }
   | { type: "HYDRATE"; state: Partial<AppState> }
-  | { type: "COMPOSITION_ADD_LAYERS"; pending: PendingMotion };
+  | { type: "COMPOSITION_ADD_LAYERS"; pending: PendingMotion }
+  | { type: "PLUGIN_INSTALL_USER"; plugin: PluginInfo }
+  | { type: "PLUGIN_UNINSTALL"; id: string };
