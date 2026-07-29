@@ -156,16 +156,19 @@ export function validateManifest(data: unknown): ValidationResult {
   if (m.permissions !== undefined) {
     if (!Array.isArray(m.permissions)) {
       result.errors.push('"permissions" must be an array');
+      result.valid = false;
     } else {
       for (let i = 0; i < m.permissions.length; i++) {
         const p = m.permissions[i];
         if (!p || typeof p !== "object") {
           result.errors.push(`permissions[${i}]: must be an object`);
+          result.valid = false;
           continue;
         }
         const perm = p as Record<string, unknown>;
         if (!perm.type || !perm.description) {
           result.errors.push(`permissions[${i}]: missing "type" or "description"`);
+          result.valid = false;
         }
       }
     }
