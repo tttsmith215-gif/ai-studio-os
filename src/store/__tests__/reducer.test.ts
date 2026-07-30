@@ -86,4 +86,53 @@ describe("appReducer", () => {
     const s = appReducer(initialState, { type: "UNKNOWN" as any });
     expect(s).toEqual(initialState);
   });
+
+  test("UNDO restores previous state after NAVIGATE", () => {
+    const s1 = appReducer(initialState, { type: "NAVIGATE", panel: "settings" });
+    expect(s1.activePanel).toBe("settings");
+    expect(s1.pastStates).toHaveLength(1);
+    const s2 = appReducer(s1, { type: "UNDO" });
+    expect(s2.activePanel).toBe("home");
+    expect(s2.pastStates).toHaveLength(0);
+    expect(s2.futureStates).toHaveLength(1);
+  });
+
+  test("REDO restores state after undo", () => {
+    const s1 = appReducer(initialState, { type: "NAVIGATE", panel: "settings" });
+    const s2 = appReducer(s1, { type: "UNDO" });
+    const s3 = appReducer(s2, { type: "REDO" });
+    expect(s3.activePanel).toBe("settings");
+    expect(s3.pastStates).toHaveLength(1);
+    expect(s3.futureStates).toHaveLength(0);
+  });
+
+  test("new action clears futureStates (branch cut)", () => {
+    const s1 = appReducer(initialState, { type: "NAVIGATE", panel: "settings" });
+    const s2 = appReducer(s1, { type: "UNDO" });
+    expect(s2.futureStates).toHaveLength(1);
+    const s3 = appReducer(s2, { type: "NAVIGATE", panel: "templates" });
+    expect(s3.activePanel).toBe("templates");
+    expect(s3.futureStates).toHaveLength(0);
+    expect(s3.pastStates).toHaveLength(1); // home is still in past
+  });
+
+  test("UNDO with empty stack returns state unchanged", () => {
+    const s = appReducer(initialState, { type: "UNDO" });
+    expect(s).toEqual(initialState);
+  });
+
+  test("REDO with empty future returns state unchanged", () => {
+    const s = appReducer(initialState, { type: "REDO" });
+    expect(s).toEqual(initialState);
+  });
+
+  test("SETTINGS_UPDATE does not create snapshot", () => {
+    const s = appReducer(initialState, { type: "SETTINGS_UPDATE", settings: { theme: "light" } });
+    expect(s.pastStates).toHaveLength(0);
+  });
+
+  test("NOTIFY does not create snapshot", () => {
+    const s = appReducer(initialState, { type: "NOTIFY", id: "n1", message: "hi", level: "info" });
+    expect(s.pastStates).toHaveLength(0);
+  });
 });

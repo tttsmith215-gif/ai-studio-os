@@ -69,6 +69,8 @@ export interface AppState {
   activeTheme: string;
   notifications: { id: string; message: string; type: string }[];
   pendingMotion: PendingMotion | null;
+  pastStates: AppState[];
+  futureStates: AppState[];
 }
 
 export type AppAction =
@@ -92,4 +94,6 @@ export type AppAction =
   | { type: "HYDRATE"; state: Partial<AppState> }
   | { type: "COMPOSITION_ADD_LAYERS"; pending: PendingMotion }
   | { type: "PLUGIN_INSTALL_USER"; plugin: PluginInfo }
-  | { type: "PLUGIN_UNINSTALL"; id: string };
+  | { type: "PLUGIN_UNINSTALL"; id: string }
+  | { type: "UNDO" }
+  | { type: "REDO" };

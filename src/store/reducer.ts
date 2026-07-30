@@ -1,5 +1,13 @@
 import type { AppAction, AppState, ThemePreset, AnimationPreset, RenderJob, PluginInfo } from "./types";
 
+const MAX_UNDO = 50;
+const NO_SNAPSHOT = new Set(["SETTINGS_LOAD", "SETTINGS_UPDATE", "NOTIFY", "NOTIFY_DISMISS", "RENDER_UPDATE", "HYDRATE", "UNDO", "REDO"]);
+
+function stripUndo(s: AppState): AppState {
+  const { pastStates, futureStates, ...rest } = s;
+  return rest as AppState;
+}
+
 export const themePresets: ThemePreset[] = [
   {
     id: "dark",
@@ -159,93 +167,122 @@ export const initialState: AppState = {
   activeTheme: "dark",
   notifications: [],
   pendingMotion: null,
+  pastStates: [],
+  futureStates: [],
 };
 
-export function appReducer(state: AppState, action: AppAction): AppState {
+function innerReducer(s: AppState, action: AppAction): AppState {
   switch (action.type) {
     case "NAVIGATE":
-      return { ...state, activePanel: action.panel };
+      return { ...s, activePanel: action.panel };
 
     case "SETTINGS_LOAD":
-      return { ...state, settings: { ...state.settings, ...action.settings } };
+      return { ...s, settings: { ...s.settings, ...action.settings } };
 
     case "SETTINGS_UPDATE":
-      return { ...state, settings: { ...state.settings, ...action.settings } };
+      return { ...s, settings: { ...s.settings, ...action.settings } };
 
     case "THEME_SET":
-      return { ...state, activeTheme: action.theme, settings: { ...state.settings, theme: action.theme } };
+      return { ...s, activeTheme: action.theme, settings: { ...s.settings, theme: action.theme } };
 
     case "PROJECTS_LOAD":
-      return { ...state, projects: action.projects };
+      return { ...s, projects: action.projects };
 
     case "PROJECTS_ADD":
-      return { ...state, projects: [action.project, ...state.projects] };
+      return { ...s, projects: [action.project, ...s.projects] };
 
     case "PROJECTS_REMOVE":
-      return { ...state, projects: state.projects.filter((p) => p.id !== action.id) };
+      return { ...s, projects: s.projects.filter((p) => p.id !== action.id) };
 
     case "PROJECT_OPEN":
-      return { ...state, currentProject: action.project, currentProjectData: action.data };
+      return { ...s, currentProject: action.project, currentProjectData: action.data };
 
     case "PROJECT_CLOSE":
-      return { ...state, currentProject: null, currentProjectData: "{}" };
+      return { ...s, currentProject: null, currentProjectData: "{}" };
 
     case "PROJECT_SAVE":
-      return { ...state, currentProjectData: action.data };
+      return { ...s, currentProjectData: action.data };
 
     case "RENDER_QUEUE_LOAD":
-      return { ...state, renderQueue: action.queue };
+      return { ...s, renderQueue: action.queue };
 
     case "RENDER_JOB_ADD":
-      return { ...state, renderQueue: [...state.renderQueue, action.job] };
+      return { ...s, renderQueue: [...s.renderQueue, action.job] };
 
     case "RENDER_UPDATE":
       return {
-        ...state,
-        renderQueue: state.renderQueue.map((j) =>
+        ...s,
+        renderQueue: s.renderQueue.map((j) =>
           j.id === action.id ? { ...j, ...action.patch } : j
         ),
       };
 
     case "PLUGINS_LOAD":
-      return { ...state, plugins: action.plugins };
+      return { ...s, plugins: action.plugins };
 
     case "PLUGIN_TOGGLE":
       return {
-        ...state,
-        plugins: state.plugins.map((p) =>
+        ...s,
+        plugins: s.plugins.map((p) =>
           p.id === action.id ? { ...p, installed: !p.installed } : p
         ),
       };
 
     case "NOTIFY":
       return {
-        ...state,
+        ...s,
         notifications: [
-          ...state.notifications,
+          ...s.notifications,
           { id: action.id, message: action.message, type: action.level },
         ],
       };
 
     case "NOTIFY_DISMISS":
       return {
-        ...state,
-        notifications: state.notifications.filter((n) => n.id !== action.id),
+        ...s,
+        notifications: s.notifications.filter((n) => n.id !== action.id),
       };
 
     case "HYDRATE":
-      return { ...state, ...action.state };
+      return { ...s, ...action.state };
 
     case "COMPOSITION_ADD_LAYERS":
-      return { ...state, pendingMotion: action.pending };
+      return { ...s, pendingMotion: action.pending };
 
     case "PLUGIN_INSTALL_USER":
-      return { ...state, plugins: [...state.plugins, action.plugin] };
+      return { ...s, plugins: [...s.plugins, action.plugin] };
 
     case "PLUGIN_UNINSTALL":
-      return { ...state, plugins: state.plugins.filter((p) => p.id !== action.id) };
+      return { ...s, plugins: s.plugins.filter((p) => p.id !== action.id) };
 
     default:
-      return state;
+      return s;
   }
+}
+
+export function appReducer(state: AppState, action: AppAction): AppState {
+  if (action.type === "UNDO") {
+    if (state.pastStates.length === 0) return state;
+    const prev = state.pastStates[state.pastStates.length - 1];
+    return { ...prev, pastStates: state.pastStates.slice(0, -1), futureStates: [stripUndo(state), ...state.futureStates] };
+  }
+
+  if (action.type === "REDO") {
+    if (state.futureStates.length === 0) return state;
+    const next = state.futureStates[0];
+    return { ...next, pastStates: [...state.pastStates, stripUndo(state)], futureStates: state.futureStates.slice(1) };
+  }
+
+  const s = stripUndo(state);
+  const newState = innerReducer(s, action);
+
+  if (NO_SNAPSHOT.has(action.type) || newState === s) {
+    return { ...newState, pastStates: state.pastStates, futureStates: state.futureStates };
+  }
+
+  return {
+    ...newState,
+    pastStates: [...state.pastStates, s].slice(-MAX_UNDO),
+    futureStates: [],
+  };
 }

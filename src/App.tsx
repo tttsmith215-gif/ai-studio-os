@@ -119,6 +119,12 @@ function AppShell() {
         case "project.open":
           setActivePanel("projects");
           break;
+        case "edit.undo":
+          dispatch({ type: "UNDO" });
+          break;
+        case "edit.redo":
+          dispatch({ type: "REDO" });
+          break;
         case "export.render":
           setActivePanel("render-queue");
           break;
