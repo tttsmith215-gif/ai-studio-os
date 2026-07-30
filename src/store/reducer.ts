@@ -147,6 +147,7 @@ export const initialState: AppState = {
     aiProvider: "ollama",
     aiModel: "llama3",
     aiEndpoint: "http://localhost:11434",
+    aiApiKey: "",
   },
   projects: [],
   currentProject: null,

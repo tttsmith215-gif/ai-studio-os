@@ -12,6 +12,7 @@ pub struct AppSettings {
     pub ai_provider: String,
     pub ai_model: String,
     pub ai_endpoint: String,
+    pub ai_api_key: String,
 }
 
 impl Default for AppSettings {
@@ -24,6 +25,7 @@ impl Default for AppSettings {
             ai_provider: "ollama".into(),
             ai_model: "llama3".into(),
             ai_endpoint: "http://localhost:11434".into(),
+            ai_api_key: String::new(),
         }
     }
 }

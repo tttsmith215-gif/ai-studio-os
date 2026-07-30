@@ -6,6 +6,7 @@ export interface AppSettings {
   aiProvider: string;
   aiModel: string;
   aiEndpoint: string;
+  aiApiKey: string;
 }
 
 export interface Project {

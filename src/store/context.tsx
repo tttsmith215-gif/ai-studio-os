@@ -29,6 +29,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
               aiProvider: s.ai_provider || "ollama",
               aiModel: s.ai_model || "llama3",
               aiEndpoint: s.ai_endpoint || "http://localhost:11434",
+              aiApiKey: s.ai_api_key || "",
             },
           });
           if (s.theme) dispatch({ type: "THEME_SET", theme: s.theme });
@@ -60,6 +61,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         ai_provider: state.settings.aiProvider,
         ai_model: state.settings.aiModel,
         ai_endpoint: state.settings.aiEndpoint,
+        ai_api_key: state.settings.aiApiKey,
       },
     }).catch(() => {});
   }, 500);

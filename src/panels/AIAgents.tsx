@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useStore } from "../store/context";
-import { chat, buildEndpoint } from "../ai";
+import { chat, chatStream, buildEndpoint } from "../ai";
 import type { AIChatMessage } from "../ai";
 
 interface AgentDef {
@@ -59,7 +59,7 @@ export function AIAgents() {
       await chat(endpoint, state.settings.aiModel, {
         messages: [{ role: "user", content: "ping" }],
         maxTokens: 1,
-      });
+      }, state.settings.aiApiKey || undefined);
       setAgentStatus((prev) => ({ ...prev, [agentId]: "online" }));
     } catch {
       setAgentStatus((prev) => ({ ...prev, [agentId]: "offline" }));
@@ -79,23 +79,36 @@ export function AIAgents() {
     setInput("");
     setLoading(true);
 
+    // Insert placeholder assistant message for streaming
+    const msgIndex = messages.length + 1; // after the user message we just added
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
     try {
       const endpoint = buildEndpoint(state.settings.aiProvider, state.settings.aiEndpoint);
-      const res = await chat(endpoint, state.settings.aiModel, {
+      await chatStream(endpoint, state.settings.aiModel, {
         messages: [
           { role: "system", content: agent.systemPrompt },
           ...messages,
           userMsg,
         ],
         temperature: 0.7,
-      });
-      setMessages((prev) => [...prev, { role: "assistant", content: res.text }]);
+      }, (token) => {
+        setMessages((prev) => {
+          const updated = [...prev];
+          const last = { ...updated[updated.length - 1] };
+          last.content += token;
+          updated[updated.length - 1] = last;
+          return updated;
+        });
+      }, state.settings.aiApiKey || undefined);
       setAgentStatus((prev) => ({ ...prev, [agent.id]: "online" }));
     } catch (err: any) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: `⚠️ Error: ${err.message}` },
-      ]);
+      // Replace empty assistant message with error
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { role: "assistant", content: `⚠️ Error: ${err.message}` };
+        return updated;
+      });
       setAgentStatus((prev) => ({ ...prev, [agent.id]: "offline" }));
     } finally {
       setLoading(false);
